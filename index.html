@@ -72,10 +72,31 @@
             from { transform: translateY(-50px) rotate(0deg); }
             to   { transform: translateY(120vh) rotate(360deg); }
         }
-    </style>
+        
+    #love-message {
+        position: fixed;
+        top: 12%;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        color: #ff1493;
+        font-size: 36px;
+        font-weight: bold;
+        text-shadow: 0 0 10px white, 0 0 25px deeppink;
+        z-index: 10000;
+        display: none;
+        pointer-events: none;
+    }
+
+    </style>  
 </head>
 
 <body>
+
+    <div id="love-message">Je t'aime ma girafe 🦒❤️</div>
+
+    <div class="container">
+
 
     <div class="container">
         <img src="Faux_autoportrait_Osrin-3°6.jpg" class="photo" id="photo" alt="romantique">
@@ -92,11 +113,21 @@
         /* LANCEMENT APRÈS PREMIER CLIC N’IMPORTE OÙ */
         document.addEventListener("click", startAll, { once: true });
 
-        function startAll() {
-            music.volume = 1;
-            music.play().catch(() => {});
-            startPetals();
-        }
+
+    function startAll() {
+        const message = document.getElementById("love-message");
+
+        message.style.display = "block";
+
+        setTimeout(() => {
+            message.style.display = "none";
+        }, 3000);
+
+        music.volume = 1;
+        music.play().catch(() => {});
+        startPetals();
+    }
+
 
         /* STOP SI ON CHANGE D’ONGLET */
         document.addEventListener("visibilitychange", () => {
