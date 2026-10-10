@@ -1,4 +1,4 @@
-html
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -7,7 +7,9 @@ html
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             margin: 0;
@@ -59,29 +61,34 @@ html
         #love-message {
             position: fixed;
             top: 12%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            color: white;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            color: #ff1493;
             font-size: 36px;
             font-weight: bold;
             text-align: center;
             text-shadow:
-                0 0 10px hotpink,
-                0 0 30px deeppink,
-                0 0 50px white;
+                0 0 5px white,
+                0 0 15px hotpink,
+                0 0 30px deeppink;
             z-index: 10000;
             display: none;
             pointer-events: none;
         }
 
-        /* PÉTALES AU PREMIER PLAN */
+        /* PÉTALES ORIGINAUX */
         .petal {
             position: fixed;
             top: -40px;
             width: 22px;
             height: 22px;
-            background: radial-gradient(circle at top left, #fff, #ffb6c1, #ff69b4);
+            background: radial-gradient(
+                circle at top left,
+                #fff,
+                #ffb6c1,
+                #ff69b4
+            );
             border-radius: 50% 50% 50% 0;
             opacity: 0.85;
             pointer-events: none;
@@ -90,27 +97,34 @@ html
         }
 
         @keyframes fall {
-            from { transform: translateY(-50px) rotate(0deg); }
-            to   { transform: translateY(120vh) rotate(360deg); }
+            from {
+                transform: translateY(-50px) rotate(0deg);
+            }
+            to {
+                transform: translateY(120vh) rotate(360deg);
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- MESSAGE : caché au départ -->
     <div id="love-message">Je t'aime ma girafe 🦒❤️</div>
 
     <div class="container">
-        <img src="Faux_autoportrait_Osrin-3°6.jpg"
-             class="photo"
-             id="photo"
-             alt="romantique">
+        <img
+            src="Faux_autoportrait_Osrin-3°6.jpg"
+            class="photo"
+            id="photo"
+            alt="romantique"
+        >
     </div>
 
     <audio id="music" loop>
-        <source src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3"
-                type="audio/mpeg">
+        <source
+            src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3"
+            type="audio/mpeg"
+        >
     </audio>
 
     <script>
@@ -121,35 +135,38 @@ html
         let messageTimeout = null;
         let started = false;
 
-        /* LANCEMENT APRÈS LE PREMIER CLIC N'IMPORTE OÙ */
+        /* LANCEMENT AU PREMIER CLIC */
         document.addEventListener("click", startAll, { once: true });
 
         function startAll() {
-            // Afficher le message immédiatement
+            /* AFFICHER LE MESSAGE */
             message.style.display = "block";
 
-            // Masquer le message après 3 secondes
             clearTimeout(messageTimeout);
 
-            messageTimeout = setTimeout(() => {
+            messageTimeout = setTimeout(function () {
                 message.style.display = "none";
             }, 3000);
 
-            // Lancer musique et pétales
+            /* DÉMARRER LA MUSIQUE */
             music.volume = 1;
-            music.play().catch(() => {});
+            music.play().catch(function (error) {
+                console.log("Lecture audio impossible :", error);
+            });
 
+            /* DÉMARRER LES PÉTALES */
             startPetals();
+
             started = true;
         }
 
-        /* STOP SI ON CHANGE D'ONGLET */
-        document.addEventListener("visibilitychange", () => {
+        /* PAUSE SI ON CHANGE D'ONGLET */
+        document.addEventListener("visibilitychange", function () {
             if (document.hidden) {
                 music.pause();
                 stopPetals();
             } else if (started) {
-                music.play().catch(() => {});
+                music.play().catch(function () {});
                 startPetals();
             }
         });
@@ -157,6 +174,7 @@ html
         /* CRÉATION D'UN PÉTALE */
         function createPetal() {
             const p = document.createElement("div");
+
             p.className = "petal";
             p.style.left = Math.random() * 100 + "vw";
             p.style.animationDuration = 6 + Math.random() * 5 + "s";
@@ -164,23 +182,27 @@ html
 
             document.body.appendChild(p);
 
-            setTimeout(() => p.remove(), 12000);
+            setTimeout(function () {
+                p.remove();
+            }, 12000);
         }
 
         /* DÉMARRER LA PLUIE DE PÉTALES */
         function startPetals() {
-            if (petalsInterval) return;
+            if (petalsInterval !== null) {
+                return;
+            }
 
-            /* Pluie instantanée au démarrage */
+            /* PLUIE INSTANTANÉE */
             for (let i = 0; i < 20; i++) {
                 createPetal();
             }
 
-            /* Pluie continue */
+            /* PLUIE CONTINUE */
             petalsInterval = setInterval(createPetal, 150);
         }
 
-        /* STOP */
+        /* ARRÊTER LES PÉTALES */
         function stopPetals() {
             clearInterval(petalsInterval);
             petalsInterval = null;
