@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -54,6 +55,26 @@
             cursor: pointer;
         }
 
+        /* MESSAGE D'AMOUR */
+        #love-message {
+            position: fixed;
+            top: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            text-shadow:
+                0 0 10px hotpink,
+                0 0 30px deeppink,
+                0 0 50px white;
+            z-index: 10000;
+            display: none;
+            pointer-events: none;
+        }
+
         /* PÉTALES AU PREMIER PLAN */
         .petal {
             position: fixed;
@@ -65,7 +86,7 @@
             opacity: 0.85;
             pointer-events: none;
             animation: fall linear infinite;
-            z-index: 9999; /* 🌸 ICI : pétales devant tout */
+            z-index: 9999;
         }
 
         @keyframes fall {
@@ -77,45 +98,70 @@
 
 <body>
 
+    <!-- MESSAGE : caché au départ -->
+    <div id="love-message">Je t'aime ma girafe 🦒❤️</div>
+
     <div class="container">
-        <img src="Faux_autoportrait_Osrin-3°6.jpg" class="photo" id="photo" alt="romantique">
+        <img src="Faux_autoportrait_Osrin-3°6.jpg"
+             class="photo"
+             id="photo"
+             alt="romantique">
     </div>
 
     <audio id="music" loop>
-        <source src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3" type="audio/mpeg">
+        <source src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3"
+                type="audio/mpeg">
     </audio>
 
     <script>
         const music = document.getElementById("music");
-        let petalsInterval = null;
+        const message = document.getElementById("love-message");
 
-        /* LANCEMENT APRÈS PREMIER CLIC N’IMPORTE OÙ */
+        let petalsInterval = null;
+        let messageTimeout = null;
+        let started = false;
+
+        /* LANCEMENT APRÈS LE PREMIER CLIC N'IMPORTE OÙ */
         document.addEventListener("click", startAll, { once: true });
 
         function startAll() {
+            // Afficher le message immédiatement
+            message.style.display = "block";
+
+            // Masquer le message après 3 secondes
+            clearTimeout(messageTimeout);
+
+            messageTimeout = setTimeout(() => {
+                message.style.display = "none";
+            }, 3000);
+
+            // Lancer musique et pétales
             music.volume = 1;
             music.play().catch(() => {});
+
             startPetals();
+            started = true;
         }
 
-        /* STOP SI ON CHANGE D’ONGLET */
+        /* STOP SI ON CHANGE D'ONGLET */
         document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
                 music.pause();
                 stopPetals();
-            } else {
+            } else if (started) {
                 music.play().catch(() => {});
                 startPetals();
             }
         });
 
-        /* CRÉATION D’UN PÉTALE */
+        /* CRÉATION D'UN PÉTALE */
         function createPetal() {
             const p = document.createElement("div");
             p.className = "petal";
             p.style.left = Math.random() * 100 + "vw";
             p.style.animationDuration = 6 + Math.random() * 5 + "s";
             p.style.transform = `scale(${0.6 + Math.random()})`;
+
             document.body.appendChild(p);
 
             setTimeout(() => p.remove(), 12000);
@@ -125,12 +171,12 @@
         function startPetals() {
             if (petalsInterval) return;
 
-            /* 🌸 BOOST : pluie instantanée au démarrage */
+            /* Pluie instantanée au démarrage */
             for (let i = 0; i < 20; i++) {
                 createPetal();
             }
 
-            /* 🌸 pluie continue */
+            /* Pluie continue */
             petalsInterval = setInterval(createPetal, 150);
         }
 
@@ -143,3 +189,4 @@
 
 </body>
 </html>
+```
