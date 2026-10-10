@@ -6,9 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             margin: 0;
@@ -56,152 +54,87 @@
             cursor: pointer;
         }
 
-        /* MESSAGE D'AMOUR */
-        #love-message {
-            position: fixed;
-            top: 12%;
-            left: 0;
-            width: 100%;
-            padding: 10px;
-            color: #ff1493;
-            font-size: 36px;
-            font-weight: bold;
-            text-align: center;
-            text-shadow:
-                0 0 5px white,
-                0 0 15px hotpink,
-                0 0 30px deeppink;
-            z-index: 10000;
-            display: none;
-            pointer-events: none;
-        }
-
-        /* PÉTALES ORIGINAUX */
+        /* PÉTALES AU PREMIER PLAN */
         .petal {
             position: fixed;
             top: -40px;
             width: 22px;
             height: 22px;
-            background: radial-gradient(
-                circle at top left,
-                #fff,
-                #ffb6c1,
-                #ff69b4
-            );
+            background: radial-gradient(circle at top left, #fff, #ffb6c1, #ff69b4);
             border-radius: 50% 50% 50% 0;
             opacity: 0.85;
             pointer-events: none;
             animation: fall linear infinite;
-            z-index: 9999;
+            z-index: 9999; /* 🌸 ICI : pétales devant tout */
         }
 
         @keyframes fall {
-            from {
-                transform: translateY(-50px) rotate(0deg);
-            }
-            to {
-                transform: translateY(120vh) rotate(360deg);
-            }
+            from { transform: translateY(-50px) rotate(0deg); }
+            to   { transform: translateY(120vh) rotate(360deg); }
         }
     </style>
 </head>
 
 <body>
 
-    <div id="love-message">Je t'aime ma girafe 🦒❤️</div>
-
     <div class="container">
-        <img
-            src="Faux_autoportrait_Osrin-3°6.jpg"
-            class="photo"
-            id="photo"
-            alt="romantique"
-        >
+        <img src="Faux_autoportrait_Osrin-3°6.jpg" class="photo" id="photo" alt="romantique">
     </div>
 
     <audio id="music" loop>
-        <source
-            src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3"
-            type="audio/mpeg"
-        >
+        <source src="George_Michael_Careless_Whisper_Remastered_Ringtone_(by Fringster.com).mp3" type="audio/mpeg">
     </audio>
 
     <script>
         const music = document.getElementById("music");
-        const message = document.getElementById("love-message");
-
         let petalsInterval = null;
-        let messageTimeout = null;
-        let started = false;
 
-        /* LANCEMENT AU PREMIER CLIC */
+        /* LANCEMENT APRÈS PREMIER CLIC N’IMPORTE OÙ */
         document.addEventListener("click", startAll, { once: true });
 
         function startAll() {
-            /* AFFICHER LE MESSAGE */
-            message.style.display = "block";
-
-            clearTimeout(messageTimeout);
-
-            messageTimeout = setTimeout(function () {
-                message.style.display = "none";
-            }, 3000);
-
-            /* DÉMARRER LA MUSIQUE */
             music.volume = 1;
-            music.play().catch(function (error) {
-                console.log("Lecture audio impossible :", error);
-            });
-
-            /* DÉMARRER LES PÉTALES */
+            music.play().catch(() => {});
             startPetals();
-
-            started = true;
         }
 
-        /* PAUSE SI ON CHANGE D'ONGLET */
-        document.addEventListener("visibilitychange", function () {
+        /* STOP SI ON CHANGE D’ONGLET */
+        document.addEventListener("visibilitychange", () => {
             if (document.hidden) {
                 music.pause();
                 stopPetals();
-            } else if (started) {
-                music.play().catch(function () {});
+            } else {
+                music.play().catch(() => {});
                 startPetals();
             }
         });
 
-        /* CRÉATION D'UN PÉTALE */
+        /* CRÉATION D’UN PÉTALE */
         function createPetal() {
             const p = document.createElement("div");
-
             p.className = "petal";
             p.style.left = Math.random() * 100 + "vw";
             p.style.animationDuration = 6 + Math.random() * 5 + "s";
             p.style.transform = `scale(${0.6 + Math.random()})`;
-
             document.body.appendChild(p);
 
-            setTimeout(function () {
-                p.remove();
-            }, 12000);
+            setTimeout(() => p.remove(), 12000);
         }
 
         /* DÉMARRER LA PLUIE DE PÉTALES */
         function startPetals() {
-            if (petalsInterval !== null) {
-                return;
-            }
+            if (petalsInterval) return;
 
-            /* PLUIE INSTANTANÉE */
+            /* 🌸 BOOST : pluie instantanée au démarrage */
             for (let i = 0; i < 20; i++) {
                 createPetal();
             }
 
-            /* PLUIE CONTINUE */
+            /* 🌸 pluie continue */
             petalsInterval = setInterval(createPetal, 150);
         }
 
-        /* ARRÊTER LES PÉTALES */
+        /* STOP */
         function stopPetals() {
             clearInterval(petalsInterval);
             petalsInterval = null;
